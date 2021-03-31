@@ -2,7 +2,7 @@
 
 This application is used to upload an image into S3 bucket using S3 signed url and later process the uploaded image using lambda functions and Amazon Rekognition to extract the text. This can be tested using a frontend application created using Vue and node.js
 
-To find more about the application refer here https://www.linkedin.com/post/edit/6779231621414555648/
+To find more about the application refer here https://www.linkedin.com/pulse/aws-serverless-computing-faas-application-using-lambda-rollend-xavier/
 
 ## Requirements
 
@@ -26,9 +26,9 @@ sam deploy --guided
 This command will be creating below set of components into your AWS using CloudFormation and should be carefull to consider your AWS billing limits.
 ```
 CloudFormation stack changeset
--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
 Operation                          LogicalResourceId                  ResourceType                       Replacement
--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
 + Add                              ImageDetectFunctionDetecteApiEve   AWS::Lambda::Permission            N/A
                                    ntPermission
 + Add                              ImageDetectFunctionRole            AWS::IAM::Role                     N/A
@@ -41,7 +41,7 @@ Operation                          LogicalResourceId                  ResourceTy
 + Add                              VehicleDetetctionApiApiGatewayDe   AWS::ApiGatewayV2::Stage           N/A
                                    faultStage
 + Add                              VehicleDetetctionApi               AWS::ApiGatewayV2::Api             N/A
------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
 
 ```
 When using --guided, SAM will prompt for basic parameters, enter:

@@ -1,0 +1,17 @@
+{
+  "name": "vehicle-rekognition",
+  "version": "1.0.1",
+  "description": "The application to recognize the registration details of an uploaded vehicle image.",
+  "homepage": "https://github.com/rollendxavier/serverless_computing.git",
+  "main": "index.js",
+  "scripts": {
+    "upload": "node -e \"console.log(require('./uploadFunction/app').handler({}));\"",
+    "detect": "node -e \"console.log(require('./detectFunction/app').handler({}));\""
+  },
+  "keywords": [],
+  "author": "Rollend Xavier, AWS Serverless",
+  "license": "MIT-0",
+  "devDependencies": {
+    "aws-sdk": "^2.873.0"
+  }
+}

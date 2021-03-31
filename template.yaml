@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: S3 Upload and text detection application
+
+Resources:
+  # HTTP API
+  VehicleDetetctionApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:   
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - "*"   
+        AllowOrigins: 
+          - "*"      
+
+  ## Lambda functions 1
+  ImageUploadFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: uploadFunction/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Timeout: 3
+      MemorySize: 128
+      Environment:
+        Variables:
+          UploadBucket: !Ref S3ImageBucket  
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Ref S3ImageBucket
+      Events:
+        UploadApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /uploads
+            Method: get
+            ApiId: !Ref VehicleDetetctionApi  
+
+  #Lambda functions 2
+  ImageDetectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: This lambda function will be triggered based on api event and uses Rekognition APIs to detect text in S3 Object and return the respose as json string.
+      CodeUri: detectFunction/
+      Handler: app.handler
+      Runtime: nodejs12.x
+      Timeout: 3
+      MemorySize: 128
+      Environment:
+        Variables:
+          UploadBucket: !Ref S3ImageBucket
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref S3ImageBucket
+        - RekognitionDetectOnlyPolicy: {}
+      Events:
+        DetecteApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /detect
+            Method: get
+            ApiId: !Ref VehicleDetetctionApi
+
+  ## S3 bucket
+  S3ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3image-vehicledetection
+      CorsConfiguration:
+        CorsRules:
+        - AllowedHeaders:
+            - "*"
+          AllowedMethods:
+            - GET
+            - PUT
+            - HEAD
+          AllowedOrigins:
+            - "*"
+## Take a note of the outputs for deploying the workflow templates in this sample application
+Outputs:
+  APIendpoint:
+    Description: "HTTP API endpoint URL"
+    Value: !Sub "https://${VehicleDetetctionApi}.execute-api.${AWS::Region}.amazonaws.com"
+  S3ImageBucketName:
+    Description: "S3 bucket for image uploads"
+    Value: !Ref 'S3ImageBucket'
+
